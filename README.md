@@ -44,3 +44,13 @@ CharManiac.exe UTF-8 UTF-8-BOM SourceFileWithoutBOM.txt TargetFileWithBOM.txt
 ```
 CharManiac.exe UTF-8-BOM UTF-8 SourceFileWithBOM.txt TargetFileWithoutBOM.txt
 ```
+
+### Convert ANSI to UTF-8 with BOM:
+```
+CharManiac.exe ANSI UTF-8-BOM SourceAnsi.txt TargetUTF-8-BOM.txt
+```
+
+### Convert Unicode (UTF-16) to UTF-8 with BOM:
+```
+CharManiac.exe Unicode UTF-8-BOM SourceUTF-16.txt TargetUTF-8-BOM.txt
+```
