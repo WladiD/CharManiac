@@ -27,6 +27,10 @@ type
     function GetPreamble: TBytes; override;
   end;
 
+  TStreamReaderHelper = class helper for TStreamReader
+    function GetLastChar: Char;
+  end;
+
 procedure DumpUsage;
 begin
   WriteLn('CharManiac SourceEncoding TargetEncoding SourceFile TargetFile');
@@ -130,6 +134,13 @@ var
   SourceReader: TStreamReader;
   TargetWriter: TStreamWriter;
   Line: string;
+
+  function IsLastCharCrOrLf: Boolean;
+  begin
+    var LastChar := SourceReader.GetLastChar;
+    Result := (LastChar = #10) or (LastChar = #13);
+  end;
+
 begin
   TargetWriter := nil;
   SourceReader := TStreamReader.Create(ASourceFileName, ASourceEnc.Encoding);
@@ -141,7 +152,10 @@ begin
     while not SourceReader.EndOfStream do
     begin
       Line := SourceReader.ReadLine;
-      TargetWriter.WriteLine(Line);
+      if SourceReader.EndOfStream and not IsLastCharCrOrLf then
+        TargetWriter.Write(Line)
+      else
+        TargetWriter.WriteLine(Line);
     end;
   finally
     SourceReader.Free;
@@ -169,6 +183,13 @@ procedure TEncodingInfo.Release;
 begin
   if OwnEncoding then
     FreeAndNil(Encoding);
+end;
+
+{ TStreamReaderHelper }
+
+function TStreamReaderHelper.GetLastChar: Char;
+begin
+  Result := FBufferedData.Chars[FBufferedData.Length - 1];
 end;
 
 var
